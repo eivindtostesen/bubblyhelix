@@ -1,2 +1,6 @@
-# bubblyhelix
-Statistical model of melting bubbles in genomic DNA
+# Bubblyhelix
+This is the Bubblyhelix software package for computing DNA melting profiles.
+
+Version 0.9.4 has previously (2012-2021) been available at the homepage: http://bubblyhelix.org. 
+
+See also Readme.txt.
