@@ -1,0 +1,1 @@
+For more documentation of Bubblyhelix, see updates on bubblyhelix.org.

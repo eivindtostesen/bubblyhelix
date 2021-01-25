@@ -1,0 +1,11 @@
+thermodynamic_parameters blossey_and_carlon_2003
+salt_molar 0.075
+list_temperatures_celcius 80 82.5 85
+
+dirname_pfdbm ../pfdbm_0.075
+dirname_results ../test/results_test1
+
+pfdbm_divisor 10
+output_lines_per_file 10000
+output_prob_format %.6e
+output_postprocess none

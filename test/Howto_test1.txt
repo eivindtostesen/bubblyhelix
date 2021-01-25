@@ -1,0 +1,25 @@
+HOWTO
+=====
+
+After having compiled the C++ program (see Readme.txt), and before doing anything else, you may do a test run of the whole Bubblyhelix code.
+
+Choose one of two ways:
+
+
+Quick way
+---------
+
+You can run the shellscript test1.sh from the top level directory of the Bubblyhelix package, by typing the command:
+
+$ ./test1.sh
+
+If you only get a message about creating fasta files, then everything works!
+
+
+
+Instructive way
+---------------
+
+Or you can type the commands in the test1.sh script yourself, in the order they are listed (copy-paste). test1.sh also contains comment lines that describe what happens in each step and how to see it.
+
+If you only get a message about creating fasta files, then everything works!

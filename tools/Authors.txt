@@ -1,0 +1,12 @@
+AUTHORS of Bubblyhelix
+======================
+
+
+Eivind Tostesen   <eivindtostesen@alumni.dtu.dk>
+	- Primary developer
+
+
+---
+
+(For updated contact information, see bubblyhelix.org.)
+

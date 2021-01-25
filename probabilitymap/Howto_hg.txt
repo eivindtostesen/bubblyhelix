@@ -1,0 +1,146 @@
+HOWTO_HG
+========
+
+
+How to download the human genome and compute its probability map with Bubblyhelix.
+
+Contents:
+
+A) Compiling
+B) Downloading fastafiles
+C) Create reverse complement genome
+D) Choose input options for the melting calculation
+E) Start the melting computations
+F) Checking progress
+
+
+
+A) Compiling
+------------
+
+If you have not already compiled the C++ program c_code/pfsweep.cpp, compile it first (see Readme.txt, section about Installing?)!
+
+Next, you may test run the whole Bubblyhelix code as described in test/Howto_test1.txt.
+
+
+
+B) Downloading fastafiles
+-------------------------
+
+The next step is to get the human genome. If you want the recent version (hg19), then one possible place to get it is UCSC:
+
+http://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/
+
+You need a folder to put the fastafiles. You can either create your own (e.g. hg_19/) or use the existing folder fastafiles/ (as we assume in this howto).
+
+Download all the files chr*.fa.gz (except perhaps for the small chrM.fa.gz ?). You can either just click the links or follow the instructions how to ftp.
+
+To uncompress the gzipped fa.gz files:
+
+    gunzip fastafiles/<file>.fa.gz
+
+(insert appropriate file names)
+
+If you obtain the genome from another location, make sure the file names end with .fa and that the format is according to:
+
+http://www.ncbi.nlm.nih.gov/blast/fasta.shtml
+
+(except that Bubblyhelix allows lines to be longer than 80 characters.)
+
+
+C) Create reverse complement genome
+-----------------------------------
+
+Now run the reversify.pl script (from the top level directory of the Bubblyhelix package):
+
+  /usr/bin/perl tools/reversify.pl fastafiles/
+
+This script should be run each time you add new fastafiles to the fastafiles/ folder. For each new fastafile it creates a file with the same name in the fastafiles/revcompl/ subfolder containing the reverse complement sequence (the opposite strand). The script changes nothing if filenames exist in complementary pairs already.
+
+
+D) Choose input options for the melting calculation
+---------------------------------------------------
+
+Input options (parameters) are given to the program in a text file. Each line in the file has the format
+
+<name> <value(s)>
+
+with the name of an input option and its value (or a space-separated list of values). 
+
+You can either create a new file for each new computation, or edit an existing file. The file probabilitymap/inputoptions_hg.txt is provided as an example. It contains the same option values as were used in the computation of chromosome 12 that was referred to in the paper:
+
+-  PNAS 2010, vol. 107, no. 30, p. 13294-13299 (DOI: 10.1073/pnas.1007081107).
+
+
+
+The options are:
+
+-  thermodynamic_parameters: The name of a thermodynamic model parameter set (usually a published parameter set that was obtained experimentally).
+
+-  salt_molar: The salt concentration [Na+] in molar units.
+
+-  list_temperatures_celcius: A list of one or more temperatures in degrees Celcius, at which you want probability profiles to be computed.
+
+-  dirname_pfdbm: the folder containing the partition function database.
+
+-  dirname_results: the folder containing the probability map output.
+
+-  pfdbm_divisor: The number of positions in the chromosome where the partition function vector is stored in the partition function database. The sequence length is divided by pfdbm_divisor and converted to a round number to get the interval length between positions (the rounding means that the actual number of positions may deviate from pfdbm_divisor). 
+ 
+-  output_lines_per_file: The chromosomes are divided into regions of this length and the probabilities are written to a separate file for each region.
+
+-  output_prob_format: printf notation for the output probability values.
+
+-  output_postprocess: A Unix command applied to each output file. Either gzip or none.
+
+Important issues:
+ 
+-  Never mix different salt concentrations or thermodynamic_parameters: If you choose existing folders for the dirname_pfdbm and dirname_results options, then the salt_molar and thermodynamic_parameters values should be equal to the values that were used previously (the values can be found in the log file). A practical way to remember this is to include the salt_molar value in the names of the two folders and maybe in the name of the input options file.
+
+-  The list_temperatures_celcius requires you to know roughly what the melting range is for the given salt concentration, thermodynamic_parameters and DNA sequences, because too high or too low temperatures will just produce probabilities equal to 0 or 1 respectively.
+
+-  The required disk size of the partition function database is roughly proportional to pfdbm_divisor.
+
+-  The required RAM memory increases linearly with output_lines_per_file. For example, using the value 5000000 requires about 1.4 GB RAM.
+
+-  The size of each output file increases with more output_lines_per_file and with more digits in output_prob_format.
+
+-  A round numbered value of output_lines_per_file makes navigating the results easier.
+
+
+
+E) Start the melting computations
+---------------------------------
+
+Run the program probabilitymap.pl for each chromosome. The required arguments are:
+
+-  the forward fastafile
+-  the reverse fastafile
+-  a Unix-friendly name of the chromosome to be used in naming new folders and files (e.g. "chr1")
+-  your input options file
+
+For example, the command for computing chromosome 1 could be:
+
+  /usr/bin/perl probabilitymap/probabilitymap.pl fastafiles/chr1.fa fastafiles/revcompl/chr1.fa chr1 probabilitymap/inputoptions_hg.txt 
+
+Each chromosome is computed independently from the others. You can run the processes sequentially with a batch script, or concurrently if more CPUs are available (the task is embarrassingly parallel). Instructions for using your cluster can not be given here.
+
+
+
+F) Checking progress
+--------------------
+
+You can check the progress of the calculation by viewing the contents of the <dirname_results> folder.
+
+The main program probabilitymap/probabilitymap.pl has two nested loops: an outside loop over temperatures and an inside loop over regions of the chromosome. The output results will appear in that order.
+
+Following the defaults in this example, you can type
+
+  ls probabilitymap/results_0.005/probabilities/
+
+to get a list of subfolders showing what temperatures have been processed. 
+
+And for each temperature, you can check what regions of what chromosomes that have been processed, for example:
+
+  ls probabilitymap/results_0.005/probabilities/60/
+

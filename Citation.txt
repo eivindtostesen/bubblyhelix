@@ -1,0 +1,13 @@
+CITATION
+========
+
+Scientific articles, presentations or abstracts that refer to this software or its output data should:
+
+
+ 1) refer to the software by its name: Bubblyhelix
+
+ 2) refer to the homepage of the software: http://bubblyhelix.org
+
+ 3) cite the appropriate publication(s) describing the methods implemented by the software: 
+
+-  E. Tostesen, F. Liu, T.-K. Jenssen, E. Hovig (2003). Speed-Up of DNA Melting Algorithm with Complete Nearest Neighbor Properties. Biopolymers 70, 364-376.
